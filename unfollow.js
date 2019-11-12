@@ -48,12 +48,12 @@ if (require.main === module) {
   const users = require('yargs').argv._;
 
   if (users.length) {
-    require('./login')().then(credentials => Promise.all(users.map(user => module.exports(user, credentials)))).then(console.log);
+    require('./login')().then(credentials => Promise.all(users.map(user => module.exports(user, credentials)))).then(console.info);
     return;
   }
 
   require('prompts')({ type: 'text', name: 'username', message: 'Unfollow' }).then(response => Promise.all([
-    Promise.resolve(response.username), require('./login')() ])).then(argv => module.exports.apply(null, argv)).then(console.log);
+    Promise.resolve(response.username), require('./login')() ])).then(argv => module.exports.apply(null, argv)).then(console.info);
 
 }
 

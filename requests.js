@@ -22,7 +22,6 @@ module.exports = async function (cookie, cursor='') {
     response = await axios.get(`https://www.instagram.com/accounts/access_tool/current_follow_requests?__a=1&cursor=${cursor}`, {
       headers: { 'Cookie': qs.stringify(cookie).replace(/&/g, '; '), 'X-CSRFToken': cookie.csrftoken } });
 
-    console.log(response.data)
     assert(response.data.data && response.status === 200);
 
     response = response.data.data;
@@ -43,7 +42,7 @@ module.exports = async function (cookie, cursor='') {
 };
 
 if (require.main === module) {
-  require('./login')().then(module.exports).then(console.log);
+  require('./login')().then(module.exports).then(console.info);
 }
 
 /* vim: set expandtab shiftwidth=2 syntax=javascript */

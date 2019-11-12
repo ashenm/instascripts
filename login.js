@@ -16,7 +16,7 @@ const prompts = require('prompts');
 const assert = require('assert');
 const fs = require('fs');
 
-const CACHE = '.credentials.json'
+const CACHE = '.credentials.json';
 
 module.exports = async function () {
 
@@ -74,7 +74,7 @@ module.exports = async function () {
       response = await axios.post('https://www.instagram.com/accounts/login/ajax/two_factor/', qs.stringify({
         username: response.data.two_factor_info.username,
         verificationCode: (await prompts({ type: 'text', name: 'PIN', message: 'Security Code' })).PIN,
-        identifier: response.data.two_factor_info.two_factor_identifier,
+        identifier: response.data.two_factor_info.two_factor_identifier
       }), { headers: { 'X-CSRFToken': cookie.csrftoken, 'Cookie': qs.stringify(cookie).replace(/&/g, '; ') } });
     }
 
@@ -99,7 +99,7 @@ module.exports = async function () {
 };
 
 if (require.main === module) {
-  module.exports().then(console.log);
+  module.exports().then(console.info);
 }
 
 /* vim: set expandtab shiftwidth=2 syntax=javascript */

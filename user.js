@@ -26,12 +26,12 @@ if (require.main === module) {
   const users = require('yargs').argv._;
 
   if (users.length) {
-    Promise.all(users.map(module.exports)).then(console.log);
+    Promise.all(users.map(module.exports)).then(console.info);
     return;
   }
 
   require('prompts')({ type: 'text', name: 'user', message: 'Username' })
-    .then(response => module.exports(response.user)).then(console.log);
+    .then(response => module.exports(response.user)).then(console.info);
 
 }
 
