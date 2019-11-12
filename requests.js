@@ -27,7 +27,7 @@ module.exports = async function (cookie, cursor='') {
     response = response.data.data;
 
     if (response.cursor) {
-      response.data.push((await this.exports(cookie, response.cursor)).data);
+      Array.prototype.push.apply(response.data, await module.exports(cookie, response.cursor));
     }
 
     return response.data;
