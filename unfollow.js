@@ -27,7 +27,7 @@ module.exports = async function (username, cookie) {
 
     // TODO retry on failure
     const response = await axios.post(`https://www.instagram.com/web/friendships/${profile.id}/unfollow/`, {}, {
-      headers: { 'X-CSRFToken': cookie.csrftoken, 'Cookie': qs.stringify(cookie).replace(/&/g, '; ') } });
+      headers: { 'Cookie': qs.stringify(cookie).replace(/&/g, '; '), 'X-CSRFToken': cookie.csrftoken, 'X-Instagram-AJAX': '1' } });
 
     // ensure unfollow successful
     assert(response.status === 200 && response.data.status === 'ok');

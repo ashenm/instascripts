@@ -20,7 +20,7 @@ module.exports = async function (cookie, cursor='') {
     let response;
 
     response = await axios.get(`https://www.instagram.com/accounts/access_tool/current_follow_requests?__a=1&cursor=${cursor}`, {
-      headers: { 'Cookie': qs.stringify(cookie).replace(/&/g, '; '), 'X-CSRFToken': cookie.csrftoken } });
+      headers: { 'Cookie': qs.stringify(cookie).replace(/&/g, '; '), 'X-CSRFToken': cookie.csrftoken, 'X-Instagram-AJAX': '1' } });
 
     assert(response.data.data && response.status === 200);
 

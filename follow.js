@@ -27,10 +27,10 @@ module.exports = async function (username, cookie) {
 
     // TODO retry on failure
     const response = await axios.post(`https://www.instagram.com/web/friendships/${profile.id}/follow/`, {}, {
-      headers: { 'Cookie': qs.stringify(cookie).replace(/&/g, '; '), 'X-CSRFToken': cookie.csrftoken } });
+      headers: { 'Cookie': qs.stringify(cookie).replace(/&/g, '; '), 'X-CSRFToken': cookie.csrftoken, 'X-Instagram-AJAX': '1' } });
 
     // ensure follow successful
-    assert(response.status === 200);
+    assert(response.status === 200 && response.data.result === 'following');
 
     return response.data;
 

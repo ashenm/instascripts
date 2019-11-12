@@ -14,7 +14,7 @@ const axios = require('axios');
 module.exports = async function (username, cookie={}) {
 
   const response = await axios.get(`https://www.instagram.com/${username}/?__a=1`, {
-    headers: { 'X-CSRFToken': cookie.csrftoken || '', 'Cookie': qs.stringify(cookie).replace(/&/g, '; ') }, validateStatus: null });
+    headers: { 'Cookie': qs.stringify(cookie).replace(/&/g, '; '), 'X-CSRFToken': cookie.csrftoken || '', 'X-Instagram-AJAX': '1' }, validateStatus: null });
 
   // TODO standardise error messages
   return response.status === 200 && response.data.graphql ? response.data.graphql.user : {};
