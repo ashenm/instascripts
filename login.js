@@ -16,7 +16,7 @@ const prompts = require('prompts');
 const assert = require('assert');
 const fs = require('fs');
 
-const CACHE = '.credentials.json';
+const CACHE = 'credentials.json';
 
 module.exports = async function () {
 

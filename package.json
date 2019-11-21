@@ -1,0 +1,19 @@
+{
+
+  "name": "instascripts",
+  "description": "A collection of Instagram facilitator scripts",
+  "keywords": "cli, instagram, script",
+  "version": "1.0.0",
+
+  "author": "Ashen Gunaratne <mail@ashenm.ml> (https://www.ashenm.ml)",
+  "homepage": "https://github.com/ashenm/instascripts",
+  "bugs": "https://github.com/ashenm/issues",
+
+  "dependencies": {
+    "axios": "0.x",
+    "cookie": "0.x",
+    "prompts": "2.x",
+    "qs": "6.x"
+  }
+
+}
