@@ -13,6 +13,7 @@
     "axios": "0.x",
     "cookie": "0.x",
     "prompts": "2.x",
+    "yargs": "15.x",
     "qs": "6.x"
   }
 
