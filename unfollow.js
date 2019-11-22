@@ -20,24 +20,26 @@ module.exports = async function (username, cookie) {
 
     const profile = await user(username, cookie);
 
+    // ensure user fetch successfull
+    assert(!profile.error, JSON.stringify(profile.error));
+
     // ensure valid following user
-    // TODO standardise error messages
-    assert(profile.id, 'User does not exists');
-    assert(profile.followed_by_viewer, 'User already unfollowed');
+    assert(profile.id, '{ "code": 404, "message": "Not Found" }');
+    assert(profile.followed_by_viewer, '{ "code": 304, "message": "Not Modified" }');
 
     // TODO retry on failure
     const response = await axios.post(`https://www.instagram.com/web/friendships/${profile.id}/unfollow/`, {}, {
-      headers: { 'Cookie': qs.stringify(cookie).replace(/&/g, '; '), 'X-CSRFToken': cookie.csrftoken, 'X-Instagram-AJAX': '1' } });
+      headers: { 'Cookie': qs.stringify(cookie).replace(/&/g, '; '), 'X-CSRFToken': cookie.csrftoken || '', 'X-Instagram-AJAX': '1' }, validateStatus: null });
 
     // ensure unfollow successful
-    assert(response.status === 200 && response.data.status === 'ok');
+    assert(response.status === 200 && response.data.status === 'ok',
+      JSON.stringify({ code: response.status, message: require('http').STATUS_CODES[response.status] }));
 
     return response.data;
 
   } catch (e) {
 
-    // TODO standardise error messages
-    return { error: e.status || e.message };
+    return { error: JSON.parse(e.message) };
 
   }
 

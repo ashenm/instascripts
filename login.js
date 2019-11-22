@@ -62,8 +62,9 @@ module.exports = async function () {
     }), { headers: { 'X-CSRFToken': cookie.csrftoken }, validateStatus: null });
 
     // ensure successful authentication
-    assert(response.status === 200 || response.status === 400, response.statusText);
-    assert(response.headers.hasOwnProperty('set-cookie')); // TODO standardise error message
+    assert(response.status === 200 || response.status === 400,
+      JSON.stringify({ code: response.status, message: require('http').STATUS_CODES[response.status] }));
+    assert(response.headers.hasOwnProperty('set-cookie'), '{ "code": 403, "message": "Forbidden" }');
 
     // extract cookies
     cookie = response.headers['set-cookie'].reduce((accumulator, value) => Object.assign(accumulator, cookies.parse(value)), cookie);
@@ -75,15 +76,15 @@ module.exports = async function () {
         username: response.data.two_factor_info.username,
         verificationCode: (await prompts({ type: 'text', name: 'PIN', message: 'Security Code' })).PIN,
         identifier: response.data.two_factor_info.two_factor_identifier
-      }), { headers: { 'X-CSRFToken': cookie.csrftoken, 'Cookie': qs.stringify(cookie).replace(/&/g, '; ') } });
+      }), { headers: { 'X-CSRFToken': cookie.csrftoken, 'Cookie': qs.stringify(cookie).replace(/&/g, '; ') }, validateStatus: null });
     }
 
-    assert(response.status === 200 && response.data.authenticated
-      && response.headers.hasOwnProperty('set-cookie')); // TODO standardise error message
+    assert(response.data.authenticated && response.headers.hasOwnProperty('set-cookie'), '{ "code": "403", "message": "Forbidden" }');
 
     cookie = response.headers['set-cookie'].reduce((accumulator, value) => Object.assign(accumulator, cookies.parse(value)), cookie);
 
     // TODO parametrise caching
+    // TODO handle i/o error(s)
     fs.writeFileSync(CACHE, JSON.stringify(cookie), { mode: 0o600 });
     console.info('[INFO] Saving session to %s', fs.realpathSync(CACHE));
 
@@ -91,8 +92,7 @@ module.exports = async function () {
 
   } catch (e) {
 
-    // TODO standardise error messages
-    return { error: e.status || e.message };
+    return { error: JSON.parse(e.message) };
 
   }
 

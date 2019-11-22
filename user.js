@@ -16,7 +16,7 @@ module.exports = async function (username, cookie={}) {
   const response = await axios.get(`https://www.instagram.com/${username}/?__a=1`, {
     headers: { 'Cookie': qs.stringify(cookie).replace(/&/g, '; '), 'X-CSRFToken': cookie.csrftoken || '', 'X-Instagram-AJAX': '1' }, validateStatus: null });
 
-  return response.status === 200 && response.data.graphql ? response.data.graphql.user
+  return response.data.graphql && response.status === 200 ? response.data.graphql.user
     : { error: { code: response.status, message: require('http').STATUS_CODES[response.status] } };
 
 };
