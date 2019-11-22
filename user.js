@@ -17,22 +17,25 @@ module.exports = async function (username, cookie={}) {
     headers: { 'Cookie': qs.stringify(cookie).replace(/&/g, '; '), 'X-CSRFToken': cookie.csrftoken || '', 'X-Instagram-AJAX': '1' }, validateStatus: null });
 
   // TODO standardise error messages
-  return response.status === 200 && response.data.graphql ? response.data.graphql.user : {};
+  return response.status === 200 && response.data.graphql ? response.data.graphql.use
+    : { error: { code: response.status, message: require('http').STATUS_CODES[response.status] } };
 
 };
 
 if (require.main === module) {
 
-  const users = require('yargs').argv._;
+  const argv = require('yargs').boolean('login').argv;
 
-  if (users.length) {
-    Promise.all(users.map(module.exports)).then(console.info);
+  if (argv._.length) {
+    Promise.resolve(argv.login ? require('./login')() : {}).then(credentials =>
+      Promise.all(argv._.map(user => module.exports(user, credentials)))).then(console.info);
     return;
   }
 
-  require('prompts')({ type: 'text', name: 'user', message: 'Username' })
-    .then(response => module.exports(response.user)).then(console.info);
+  require('prompts')({ type: 'text', name: 'user', message: 'Username' }).then(response => Promise.all([
+    Promise.resolve(response.user), Promise.resolve(argv.login ? require('./login')() : {})
+  ])).then(argv => module.exports.apply(null, argv)).then(console.info);
 
 }
 
-/* vim: set expandtab shiftwidth=2 syntax=javascript */
+/* vim: set expandtab shiftwidth=2 syntax=javascript: */
