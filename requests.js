@@ -43,18 +43,7 @@ module.exports = async function (cookie, cursor='') {
 
 if (require.main === module) {
 
-  const yargs = require('yargs').option('unfollow', {
-    type: 'boolean',
-    desc: 'Unfollow all pending follow requests'
-  }).argv;
-
-  if (!yargs.unfollow) {
-    require('./login')().then(module.exports).then(console.info);
-    return;
-  }
-
-  require('./login')().then(credentials => Promise.all([ Promise.resolve(credentials), module.exports(credentials), Promise.resolve(require('./unfollow')) ]))
-    .then(argv => Promise.all(argv[1].map(user => argv[2](user.text, argv[0])))).then(console.info);
+  require('./login')().then(module.exports).then(console.info);
 
 }
 
