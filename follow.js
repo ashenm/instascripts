@@ -32,7 +32,7 @@ module.exports = async function (username, cookie) {
       headers: { 'Cookie': qs.stringify(cookie).replace(/&/g, '; '), 'X-CSRFToken': cookie.csrftoken || '', 'X-Instagram-AJAX': '1' }, validateStatus: null });
 
     // ensure follow successful
-    assert(response.status === 200 && response.data.result === 'following', '{ "code": "403", "message": "Forbidden" }');
+    assert(response.status === 200 && response.data.status === 'ok', '{ "code": "403", "message": "Forbidden" }');
 
     return response.data;
 
