@@ -64,7 +64,7 @@ module.exports = async function () {
     // ensure successful authentication
     assert(response.status === 200 || response.status === 400,
       JSON.stringify({ code: response.status, message: require('http').STATUS_CODES[response.status] }));
-    assert(response.headers.hasOwnProperty('set-cookie'), '{ "code": 402, "message": "Unauthorized" }');
+    assert(response.headers.hasOwnProperty('set-cookie'), '{ "code": 403, "message": "Forbidden" }');
 
     // extract cookies
     cookie = response.headers['set-cookie'].reduce((accumulator, value) => Object.assign(accumulator, cookies.parse(value)), cookie);
