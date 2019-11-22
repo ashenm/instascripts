@@ -102,4 +102,4 @@ if (require.main === module) {
   module.exports().then(console.info);
 }
 
-/* vim: set expandtab shiftwidth=2 syntax=javascript */
+/* vim: set expandtab shiftwidth=2 syntax=javascript: */

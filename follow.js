@@ -57,4 +57,4 @@ if (require.main === module) {
 
 }
 
-/* vim: set expandtab shiftwidth=2 syntax=javascript */
+/* vim: set expandtab shiftwidth=2 syntax=javascript: */
