@@ -20,9 +20,10 @@ module.exports = async function (cookie, cursor='') {
     let response;
 
     response = await axios.get(`https://www.instagram.com/accounts/access_tool/current_follow_requests?__a=1&cursor=${cursor}`, {
-      headers: { 'Cookie': qs.stringify(cookie).replace(/&/g, '; '), 'X-CSRFToken': cookie.csrftoken, 'X-Instagram-AJAX': '1' } });
+      headers: { 'Cookie': qs.stringify(cookie).replace(/&/g, '; '), 'X-CSRFToken': cookie.csrftoken || '', 'X-Instagram-AJAX': '1' }, validateStatus: null });
 
-    assert(response.data.data && response.status === 200);
+    assert(response.data.data && response.status === 200,
+      JSON.stringify({ code: response.status, message: require('http').STATUS_CODES[response.status] })));
 
     response = response.data.data;
 
@@ -34,15 +35,27 @@ module.exports = async function (cookie, cursor='') {
 
   } catch (e) {
 
-    // TODO standardise error messages
-    return { error: e.status || e.message };
+    return { error: JSON.parse(e.message) };
 
   }
 
 };
 
 if (require.main === module) {
-  require('./login')().then(module.exports).then(console.info);
+
+  const yargs = require('yargs').option('unfollow', {
+    type: 'boolean',
+    desc: 'Unfollow all pending follow requests'
+  }).argv;
+
+  if (!yargs.unfollow) {
+    require('./login')().then(module.exports).then(console.info);
+    return;
+  }
+
+  require('./login')().then(credentials => Promise.all([ Promise.resolve(credentials), module.exports(credentials), Promise.resolve(require('./unfollow')) ]))
+    .then(argv => Promise.all(argv[1].map(user => argv[2](user.text, argv[0])))).then(console.info);
+
 }
 
-/* vim: set expandtab shiftwidth=2 syntax=javascript */
+/* vim: set expandtab shiftwidth=2 syntax=javascript: */
