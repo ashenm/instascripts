@@ -25,7 +25,7 @@ module.exports = async function (username, cookie) {
 
     // ensure valid following user
     assert(profile.id, '{ "code": 404, "message": "Not Found" }');
-    assert(profile.followed_by_viewer, '{ "code": 304, "message": "Not Modified" }');
+    assert(profile.followed_by_viewer || profile.requested_by_viewer, '{ "code": 304, "message": "Not Modified" }');
 
     // TODO retry on failure
     const response = await axios.post(`https://www.instagram.com/web/friendships/${profile.id}/unfollow/`, {}, {
