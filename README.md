@@ -18,7 +18,7 @@ node unfollow [user]...
 
 ### [requests.js](requests.js) ###
 ```shell
-node requests [--unfollow]
+node requests [--unfollow] [--max-count=THRESHOLD]
 ```
 
 ### [user.js](user.js) ###
