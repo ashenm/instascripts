@@ -43,7 +43,22 @@ module.exports = async function (cookie, cursor='', maxCount=Infinity) {
 
 if (require.main === module) {
 
-  require('./login')().then(module.exports).then(console.info);
+  const yargs = require('yargs').option('unfollow', {
+    type: 'boolean',
+    desc: 'Unfollow all pending follow requests'
+  }).option('max-count', {
+    type: 'number',
+    desc: 'Limit results to specified threshold',
+    default: Infinity
+  }).argv;
+
+  if (!yargs.unfollow) {
+    require('./login')().then(credentials => module.exports(credentials, undefined, yargs['max-count'])).then(console.info);
+    return;
+  }
+
+  require('./login')().then(credentials => Promise.all([ Promise.resolve(credentials), module.exports(credentials, undefined, yargs['max-count']),
+    Promise.resolve(require('./unfollow')) ])).then(argv => Promise.all(argv[1].map(user => argv[2](user.text, argv[0])))).then(console.info);
 
 }
 
