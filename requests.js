@@ -13,7 +13,7 @@ const axios = require('axios');
 
 const assert = require('assert');
 
-module.exports = async function (cookie, cursor='') {
+module.exports = async function (cookie, cursor='', maxCount=Infinity) {
 
   try {
 
@@ -27,11 +27,11 @@ module.exports = async function (cookie, cursor='') {
 
     response = response.data.data;
 
-    if (response.cursor) {
-      Array.prototype.push.apply(response.data, await module.exports(cookie, response.cursor));
+    if (response.cursor && response.data.length < maxCount) {
+      Array.prototype.push.apply(response.data, await module.exports(cookie, response.cursor, maxCount - response.data.length));
     }
 
-    return response.data;
+    return response.data.slice(0, maxCount);
 
   } catch (e) {
 
