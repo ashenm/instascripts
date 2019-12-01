@@ -23,7 +23,7 @@ module.exports = async function (cookie, cursor='') {
       headers: { 'Cookie': qs.stringify(cookie).replace(/&/g, '; '), 'X-CSRFToken': cookie.csrftoken || '', 'X-Instagram-AJAX': '1' }, validateStatus: null });
 
     assert(response.data.data && response.status === 200,
-      JSON.stringify({ code: response.status, message: require('http').STATUS_CODES[response.status] })));
+      JSON.stringify({ code: response.status, message: require('http').STATUS_CODES[response.status] }));
 
     response = response.data.data;
 
